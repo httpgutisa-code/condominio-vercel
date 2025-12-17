@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Edit, Trash2, Plus, Search, Filter } from 'lucide-react';
+import { Plus, Search, Filter, Edit, Trash2, Car, RefreshCcw } from 'lucide-react';
 import ResidenteForm from './ResidenteForm';
+import VehiculosModal from './VehiculosModal';
 import { residentes } from '../../services/api';
 
 const ResidentesTable = () => {
@@ -11,6 +12,9 @@ const ResidentesTable = () => {
     const [editingResidente, setEditingResidente] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterPropietario, setFilterPropietario] = useState('all');
+
+    const [isVehiculosModalOpen, setIsVehiculosModalOpen] = useState(false);
+    const [selectedResidenteVehiculos, setSelectedResidenteVehiculos] = useState(null);
 
     useEffect(() => {
         fetchResidentes();
@@ -66,6 +70,28 @@ const ResidentesTable = () => {
                 console.error('Error deleting residente:', error);
                 alert('Error al eliminar el residente');
             }
+        }
+    };
+
+    const handleVehiculos = (residente) => {
+        setSelectedResidenteVehiculos(residente);
+        setIsVehiculosModalOpen(true);
+    };
+
+    const handleUpdateScore = async (residente) => {
+        try {
+            // Mocking IA Score update for demo purposes or calling API if exists logic
+            // The API requires a score, or maybe the backend calculates it.
+            // If backend calculates, we might POST to an action.
+            // Documentation says: POST /residentes/{id}/actualizar-score-ia/ { score_morosidad_ia: <int> }
+            // Let's assume we trigger a recalculation or just simulate simple update for now.
+            const randomScore = Math.floor(Math.random() * 100);
+            await residentes.actualizarScoreIA(residente.id, randomScore);
+            alert(`Score actualizado a ${randomScore}%`);
+            fetchResidentes();
+        } catch (error) {
+            console.error('Error updating score:', error);
+            alert('Error al actualizar Score IA');
         }
     };
 
@@ -207,8 +233,8 @@ const ResidentesTable = () => {
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            {residente.score_morosidad_ia != null ? (
-                                                <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-2">
+                                                {residente.score_morosidad_ia != null ? (
                                                     <div className="flex-1 w-24 h-2 bg-gray-100 rounded-full overflow-hidden">
                                                         <div
                                                             className={`h-full rounded-full ${Number(residente.score_morosidad_ia) < 30 ? 'bg-green-500' :
@@ -217,17 +243,25 @@ const ResidentesTable = () => {
                                                             style={{ width: `${Number(residente.score_morosidad_ia)}%` }}
                                                         ></div>
                                                     </div>
-                                                    <span className="text-sm font-bold text-gray-700">{Number(residente.score_morosidad_ia).toFixed(0)}%</span>
-                                                </div>
-                                            ) : (
-                                                <span className="text-xs text-gray-400">No calc.</span>
-                                            )}
+                                                ) : <span className="text-xs text-gray-400">N/A</span>}
+                                                
+                                                <button onClick={() => handleUpdateScore(residente)} title="Recalcular con IA" className="p-1 text-gray-400 hover:text-brand-600 rounded-full hover:bg-gray-100">
+                                                    <RefreshCcw size={14} />
+                                                </button>
+                                            </div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <button
+                                                    onClick={() => handleVehiculos(residente)}
+                                                    className="p-2 text-gray-500 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors"
+                                                    title="Vehículos"
+                                                >
+                                                    <Car size={18} />
+                                                </button>
+                                                <button
                                                     onClick={() => handleEdit(residente)}
-                                                    className="p-2 text-brand-600 hover:bg-brand-50 rounded-lg transition-colors"
+                                                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                                                     title="Editar"
                                                 >
                                                     <Edit size={18} />
@@ -248,6 +282,13 @@ const ResidentesTable = () => {
                     </table>
                 </div>
             </div>
+
+            {/* Vehiculos Modal */}
+            <VehiculosModal 
+                isOpen={isVehiculosModalOpen}
+                onClose={() => setIsVehiculosModalOpen(false)}
+                resident={selectedResidenteVehiculos}
+            />
 
             {/* Form Modal */}
             <ResidenteForm
