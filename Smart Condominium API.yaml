@@ -1,0 +1,3919 @@
+openapi: 3.0.3
+info:
+  title: Smart Condominium API
+  version: 1.0.0
+  description: API REST para el sistema de gestión de condominios inteligentes. Incluye
+    gestión de residentes, finanzas, áreas comunes, mantenimiento, seguridad con validación
+    QR/OCR y alertas de IA.
+servers:
+  - url: http://18.217.181.132
+    description: Production Server
+  - url: http://localhost:8000
+    description: Local Development Server
+paths:
+  /:
+    get:
+      operationId: root_retrieve
+      description: Vista raíz de la API con información y enlaces de documentación
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/:
+    get:
+      operationId: root_retrieve_2
+      description: Vista raíz de la API con información y enlaces de documentación
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/administradores/:
+    get:
+      operationId: administradores_list
+      tags:
+      - administradores
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Administrador'
+          description: ''
+    post:
+      operationId: administradores_create
+      tags:
+      - administradores
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdministradorRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdministradorRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdministradorRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Administrador'
+          description: ''
+  /api/administradores/{id}/:
+    get:
+      operationId: administradores_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this administrador.
+        required: true
+      tags:
+      - administradores
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Administrador'
+          description: ''
+    put:
+      operationId: administradores_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this administrador.
+        required: true
+      tags:
+      - administradores
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdministradorRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdministradorRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdministradorRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Administrador'
+          description: ''
+    patch:
+      operationId: administradores_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this administrador.
+        required: true
+      tags:
+      - administradores
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAdministradorRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAdministradorRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAdministradorRequest'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Administrador'
+          description: ''
+    delete:
+      operationId: administradores_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this administrador.
+        required: true
+      tags:
+      - administradores
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/alertas-seguridad/:
+    get:
+      operationId: alertas_seguridad_list
+      parameters:
+      - in: query
+        name: residente_relacionado
+        schema:
+          type: integer
+      - in: query
+        name: resuelto
+        schema:
+          type: boolean
+      - in: query
+        name: tipo_alerta
+        schema:
+          type: string
+          enum:
+          - actividad_inusual
+          - intruso
+          - otro
+          - perro_suelto
+          - vehiculo_sospechoso
+        description: |-
+          * `intruso` - Intruso Detectado
+          * `perro_suelto` - Perro Suelto
+          * `vehiculo_sospechoso` - Vehículo Sospechoso
+          * `actividad_inusual` - Actividad Inusual
+          * `otro` - Otro
+      tags:
+      - alertas-seguridad
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AlertaSeguridad'
+          description: ''
+    post:
+      operationId: alertas_seguridad_create
+      tags:
+      - alertas-seguridad
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertaSeguridadRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AlertaSeguridadRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AlertaSeguridadRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertaSeguridad'
+          description: ''
+  /api/alertas-seguridad/{id}/:
+    get:
+      operationId: alertas_seguridad_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this alerta seguridad.
+        required: true
+      tags:
+      - alertas-seguridad
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertaSeguridad'
+          description: ''
+    put:
+      operationId: alertas_seguridad_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this alerta seguridad.
+        required: true
+      tags:
+      - alertas-seguridad
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertaSeguridadRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AlertaSeguridadRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AlertaSeguridadRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertaSeguridad'
+          description: ''
+    patch:
+      operationId: alertas_seguridad_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this alerta seguridad.
+        required: true
+      tags:
+      - alertas-seguridad
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAlertaSeguridadRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAlertaSeguridadRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAlertaSeguridadRequest'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlertaSeguridad'
+          description: ''
+    delete:
+      operationId: alertas_seguridad_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this alerta seguridad.
+        required: true
+      tags:
+      - alertas-seguridad
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/areas-comunes/:
+    get:
+      operationId: areas_comunes_list
+      parameters:
+      - in: query
+        name: disponible
+        schema:
+          type: boolean
+      tags:
+      - areas-comunes
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AreaComun'
+          description: ''
+    post:
+      operationId: areas_comunes_create
+      tags:
+      - areas-comunes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AreaComunRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AreaComunRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AreaComunRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AreaComun'
+          description: ''
+  /api/areas-comunes/{id}/:
+    get:
+      operationId: areas_comunes_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this area comun.
+        required: true
+      tags:
+      - areas-comunes
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AreaComun'
+          description: ''
+    put:
+      operationId: areas_comunes_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this area comun.
+        required: true
+      tags:
+      - areas-comunes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AreaComunRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AreaComunRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AreaComunRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AreaComun'
+          description: ''
+    patch:
+      operationId: areas_comunes_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this area comun.
+        required: true
+      tags:
+      - areas-comunes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAreaComunRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAreaComunRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAreaComunRequest'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AreaComun'
+          description: ''
+    delete:
+      operationId: areas_comunes_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this area comun.
+        required: true
+      tags:
+      - areas-comunes
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/cuotas/:
+    get:
+      operationId: cuotas_list
+      description: |-
+        Gestión de cuotas/expensas.
+        FILTROS: ?residente={id} & ?estado={pendiente|pagada|vencida}
+      parameters:
+      - in: query
+        name: estado
+        schema:
+          type: string
+          enum:
+          - pagada
+          - pendiente
+          - vencida
+        description: |-
+          * `pendiente` - Pendiente
+          * `pagada` - Pagada
+          * `vencida` - Vencida
+      - in: query
+        name: mes
+        schema:
+          type: string
+      - in: query
+        name: residente
+        schema:
+          type: integer
+      tags:
+      - cuotas
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cuota'
+          description: ''
+    post:
+      operationId: cuotas_create
+      description: |-
+        Gestión de cuotas/expensas.
+        FILTROS: ?residente={id} & ?estado={pendiente|pagada|vencida}
+      tags:
+      - cuotas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CuotaRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CuotaRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CuotaRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cuota'
+          description: ''
+  /api/cuotas/{id}/:
+    get:
+      operationId: cuotas_retrieve
+      description: |-
+        Gestión de cuotas/expensas.
+        FILTROS: ?residente={id} & ?estado={pendiente|pagada|vencida}
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this cuota.
+        required: true
+      tags:
+      - cuotas
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cuota'
+          description: ''
+    put:
+      operationId: cuotas_update
+      description: |-
+        Gestión de cuotas/expensas.
+        FILTROS: ?residente={id} & ?estado={pendiente|pagada|vencida}
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this cuota.
+        required: true
+      tags:
+      - cuotas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CuotaRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CuotaRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CuotaRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cuota'
+          description: ''
+    patch:
+      operationId: cuotas_partial_update
+      description: |-
+        Gestión de cuotas/expensas.
+        FILTROS: ?residente={id} & ?estado={pendiente|pagada|vencida}
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this cuota.
+        required: true
+      tags:
+      - cuotas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCuotaRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCuotaRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCuotaRequest'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cuota'
+          description: ''
+    delete:
+      operationId: cuotas_destroy
+      description: |-
+        Gestión de cuotas/expensas.
+        FILTROS: ?residente={id} & ?estado={pendiente|pagada|vencida}
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this cuota.
+        required: true
+      tags:
+      - cuotas
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/dashboard/admin/:
+    get:
+      operationId: dashboard_admin_retrieve
+      description: |-
+        Endpoint agregado para el Dashboard de Administrador.
+        Retorna KPIs y datos listos para gráficos.
+      tags:
+      - dashboard
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/pagos/:
+    get:
+      operationId: pagos_list
+      description: |-
+        Registro de pagos realizados.
+        FILTROS: ?cuota__residente={id} (Para ver todos los pagos de un residente)
+      parameters:
+      - in: query
+        name: cuota
+        schema:
+          type: integer
+      - in: query
+        name: cuota__residente
+        schema:
+          type: integer
+      tags:
+      - pagos
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pago'
+          description: ''
+    post:
+      operationId: pagos_create
+      description: Override para actualizar automáticamente el estado de la cuota
+        al crear un pago
+      tags:
+      - pagos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PagoRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PagoRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PagoRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pago'
+          description: ''
+  /api/pagos/{id}/:
+    get:
+      operationId: pagos_retrieve
+      description: |-
+        Registro de pagos realizados.
+        FILTROS: ?cuota__residente={id} (Para ver todos los pagos de un residente)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this pago.
+        required: true
+      tags:
+      - pagos
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pago'
+          description: ''
+    put:
+      operationId: pagos_update
+      description: |-
+        Registro de pagos realizados.
+        FILTROS: ?cuota__residente={id} (Para ver todos los pagos de un residente)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this pago.
+        required: true
+      tags:
+      - pagos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PagoRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PagoRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PagoRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pago'
+          description: ''
+    patch:
+      operationId: pagos_partial_update
+      description: |-
+        Registro de pagos realizados.
+        FILTROS: ?cuota__residente={id} (Para ver todos los pagos de un residente)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this pago.
+        required: true
+      tags:
+      - pagos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPagoRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPagoRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPagoRequest'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pago'
+          description: ''
+    delete:
+      operationId: pagos_destroy
+      description: |-
+        Registro de pagos realizados.
+        FILTROS: ?cuota__residente={id} (Para ver todos los pagos de un residente)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this pago.
+        required: true
+      tags:
+      - pagos
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/personal-mantenimiento/:
+    get:
+      operationId: personal_mantenimiento_list
+      tags:
+      - personal-mantenimiento
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PersonalMantenimiento'
+          description: ''
+    post:
+      operationId: personal_mantenimiento_create
+      tags:
+      - personal-mantenimiento
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonalMantenimientoRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PersonalMantenimientoRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PersonalMantenimientoRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalMantenimiento'
+          description: ''
+  /api/personal-mantenimiento/{id}/:
+    get:
+      operationId: personal_mantenimiento_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this personal mantenimiento.
+        required: true
+      tags:
+      - personal-mantenimiento
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalMantenimiento'
+          description: ''
+    put:
+      operationId: personal_mantenimiento_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this personal mantenimiento.
+        required: true
+      tags:
+      - personal-mantenimiento
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonalMantenimientoRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PersonalMantenimientoRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PersonalMantenimientoRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalMantenimiento'
+          description: ''
+    patch:
+      operationId: personal_mantenimiento_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this personal mantenimiento.
+        required: true
+      tags:
+      - personal-mantenimiento
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPersonalMantenimientoRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPersonalMantenimientoRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPersonalMantenimientoRequest'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalMantenimiento'
+          description: ''
+    delete:
+      operationId: personal_mantenimiento_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this personal mantenimiento.
+        required: true
+      tags:
+      - personal-mantenimiento
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/reportes/finanzas/:
+    get:
+      operationId: reportes_finanzas_retrieve
+      description: Descargar reporte de cuotas y pagos en Excel
+      tags:
+      - reportes
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/reportes/seguridad/:
+    get:
+      operationId: reportes_seguridad_retrieve
+      description: Descargar reporte de alertas de seguridad recientes en PDF
+      tags:
+      - reportes
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/reservas/:
+    get:
+      operationId: reservas_list
+      description: |-
+        Gestión de reservas.
+        FILTROS: ?residente={id} & ?fecha_reserva={YYYY-MM-DD}
+      parameters:
+      - in: query
+        name: area_comun
+        schema:
+          type: integer
+      - in: query
+        name: estado
+        schema:
+          type: string
+          enum:
+          - cancelada
+          - completada
+          - confirmada
+          - pendiente
+        description: |-
+          * `pendiente` - Pendiente
+          * `confirmada` - Confirmada
+          * `cancelada` - Cancelada
+          * `completada` - Completada
+      - in: query
+        name: fecha_reserva
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: residente
+        schema:
+          type: integer
+      tags:
+      - reservas
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Reserva'
+          description: ''
+    post:
+      operationId: reservas_create
+      description: |-
+        Gestión de reservas.
+        FILTROS: ?residente={id} & ?fecha_reserva={YYYY-MM-DD}
+      tags:
+      - reservas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReservaRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReservaRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReservaRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reserva'
+          description: ''
+  /api/reservas/{id}/:
+    get:
+      operationId: reservas_retrieve
+      description: |-
+        Gestión de reservas.
+        FILTROS: ?residente={id} & ?fecha_reserva={YYYY-MM-DD}
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this reserva.
+        required: true
+      tags:
+      - reservas
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reserva'
+          description: ''
+    put:
+      operationId: reservas_update
+      description: |-
+        Gestión de reservas.
+        FILTROS: ?residente={id} & ?fecha_reserva={YYYY-MM-DD}
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this reserva.
+        required: true
+      tags:
+      - reservas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReservaRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReservaRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReservaRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reserva'
+          description: ''
+    patch:
+      operationId: reservas_partial_update
+      description: |-
+        Gestión de reservas.
+        FILTROS: ?residente={id} & ?fecha_reserva={YYYY-MM-DD}
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this reserva.
+        required: true
+      tags:
+      - reservas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedReservaRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedReservaRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedReservaRequest'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reserva'
+          description: ''
+    delete:
+      operationId: reservas_destroy
+      description: |-
+        Gestión de reservas.
+        FILTROS: ?residente={id} & ?fecha_reserva={YYYY-MM-DD}
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this reserva.
+        required: true
+      tags:
+      - reservas
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/residentes/:
+    get:
+      operationId: residentes_list
+      tags:
+      - residentes
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Residente'
+          description: ''
+    post:
+      operationId: residentes_create
+      tags:
+      - residentes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResidenteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResidenteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResidenteRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Residente'
+          description: ''
+  /api/residentes/{id}/:
+    get:
+      operationId: residentes_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this residente.
+        required: true
+      tags:
+      - residentes
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Residente'
+          description: ''
+    put:
+      operationId: residentes_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this residente.
+        required: true
+      tags:
+      - residentes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResidenteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResidenteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResidenteRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Residente'
+          description: ''
+    patch:
+      operationId: residentes_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this residente.
+        required: true
+      tags:
+      - residentes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedResidenteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedResidenteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedResidenteRequest'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Residente'
+          description: ''
+    delete:
+      operationId: residentes_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this residente.
+        required: true
+      tags:
+      - residentes
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/residentes/{id}/actualizar-score-ia/:
+    post:
+      operationId: residentes_actualizar_score_ia_create
+      description: |-
+        Actualiza el score de morosidad calculado por IA externa.
+
+        La IA calcula el riesgo de morosidad externamente y envía el puntaje al backend.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this residente.
+        required: true
+      tags:
+      - residentes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResidenteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResidenteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResidenteRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Residente'
+          description: ''
+  /api/seguridad/:
+    get:
+      operationId: seguridad_list
+      description: ViewSet para personal de seguridad con acciones personalizadas
+      tags:
+      - seguridad
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Seguridad'
+          description: ''
+    post:
+      operationId: seguridad_create
+      description: ViewSet para personal de seguridad con acciones personalizadas
+      tags:
+      - seguridad
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SeguridadRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SeguridadRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SeguridadRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Seguridad'
+          description: ''
+  /api/seguridad/{id}/:
+    get:
+      operationId: seguridad_retrieve
+      description: ViewSet para personal de seguridad con acciones personalizadas
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this seguridad.
+        required: true
+      tags:
+      - seguridad
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Seguridad'
+          description: ''
+    put:
+      operationId: seguridad_update
+      description: ViewSet para personal de seguridad con acciones personalizadas
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this seguridad.
+        required: true
+      tags:
+      - seguridad
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SeguridadRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SeguridadRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SeguridadRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Seguridad'
+          description: ''
+    patch:
+      operationId: seguridad_partial_update
+      description: ViewSet para personal de seguridad con acciones personalizadas
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this seguridad.
+        required: true
+      tags:
+      - seguridad
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSeguridadRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSeguridadRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSeguridadRequest'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Seguridad'
+          description: ''
+    delete:
+      operationId: seguridad_destroy
+      description: ViewSet para personal de seguridad con acciones personalizadas
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this seguridad.
+        required: true
+      tags:
+      - seguridad
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/seguridad/validar-facial/:
+    post:
+      operationId: seguridad_validar_facial_create
+      description: Simula la validación de acceso mediante Reconocimiento Facial.
+      tags:
+      - seguridad
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SeguridadRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SeguridadRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SeguridadRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Seguridad'
+          description: ''
+  /api/seguridad/validar-placa/:
+    post:
+      operationId: seguridad_validar_placa_create
+      description: Valida el acceso de un vehículo mediante su placa (Spec Móvil).
+      tags:
+      - seguridad
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SeguridadRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SeguridadRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SeguridadRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Seguridad'
+          description: ''
+  /api/seguridad/validar-qr/:
+    post:
+      operationId: seguridad_validar_qr_create
+      description: Valida el acceso de un visitante mediante código QR (Spec Móvil).
+      tags:
+      - seguridad
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SeguridadRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SeguridadRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SeguridadRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Seguridad'
+          description: ''
+  /api/tickets-mantenimiento/:
+    get:
+      operationId: tickets_mantenimiento_list
+      description: |-
+        Tickets de mantenimiento.
+        FILTROS: ?residente={id} & ?estado={abierto|en_proceso...}
+      parameters:
+      - in: query
+        name: asignado_a
+        schema:
+          type: integer
+      - in: query
+        name: estado
+        schema:
+          type: string
+          enum:
+          - abierto
+          - cerrado
+          - en_proceso
+          - resuelto
+        description: |-
+          * `abierto` - Abierto
+          * `en_proceso` - En Proceso
+          * `resuelto` - Resuelto
+          * `cerrado` - Cerrado
+      - in: query
+        name: prioridad
+        schema:
+          type: string
+          enum:
+          - alta
+          - baja
+          - media
+          - urgente
+        description: |-
+          * `baja` - Baja
+          * `media` - Media
+          * `alta` - Alta
+          * `urgente` - Urgente
+      - in: query
+        name: residente
+        schema:
+          type: integer
+      tags:
+      - tickets-mantenimiento
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TicketMantenimiento'
+          description: ''
+    post:
+      operationId: tickets_mantenimiento_create
+      description: |-
+        Tickets de mantenimiento.
+        FILTROS: ?residente={id} & ?estado={abierto|en_proceso...}
+      tags:
+      - tickets-mantenimiento
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketMantenimientoRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TicketMantenimientoRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TicketMantenimientoRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketMantenimiento'
+          description: ''
+  /api/tickets-mantenimiento/{id}/:
+    get:
+      operationId: tickets_mantenimiento_retrieve
+      description: |-
+        Tickets de mantenimiento.
+        FILTROS: ?residente={id} & ?estado={abierto|en_proceso...}
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this ticket mantenimiento.
+        required: true
+      tags:
+      - tickets-mantenimiento
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketMantenimiento'
+          description: ''
+    put:
+      operationId: tickets_mantenimiento_update
+      description: |-
+        Tickets de mantenimiento.
+        FILTROS: ?residente={id} & ?estado={abierto|en_proceso...}
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this ticket mantenimiento.
+        required: true
+      tags:
+      - tickets-mantenimiento
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketMantenimientoRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TicketMantenimientoRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TicketMantenimientoRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketMantenimiento'
+          description: ''
+    patch:
+      operationId: tickets_mantenimiento_partial_update
+      description: |-
+        Tickets de mantenimiento.
+        FILTROS: ?residente={id} & ?estado={abierto|en_proceso...}
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this ticket mantenimiento.
+        required: true
+      tags:
+      - tickets-mantenimiento
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTicketMantenimientoRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTicketMantenimientoRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTicketMantenimientoRequest'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketMantenimiento'
+          description: ''
+    delete:
+      operationId: tickets_mantenimiento_destroy
+      description: |-
+        Tickets de mantenimiento.
+        FILTROS: ?residente={id} & ?estado={abierto|en_proceso...}
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this ticket mantenimiento.
+        required: true
+      tags:
+      - tickets-mantenimiento
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/token/:
+    post:
+      operationId: token_create
+      description: |-
+        Vista personalizada para simular la obtención de Token (JWT Style)
+        y devolver la estructura exacta que espera la App Móvil.
+      tags:
+      - token
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/unidades-habitacionales/:
+    get:
+      operationId: unidades_habitacionales_list
+      tags:
+      - unidades-habitacionales
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UnidadHabitacional'
+          description: ''
+    post:
+      operationId: unidades_habitacionales_create
+      tags:
+      - unidades-habitacionales
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UnidadHabitacionalRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UnidadHabitacionalRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UnidadHabitacionalRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnidadHabitacional'
+          description: ''
+  /api/unidades-habitacionales/{id}/:
+    get:
+      operationId: unidades_habitacionales_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this unidad habitacional.
+        required: true
+      tags:
+      - unidades-habitacionales
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnidadHabitacional'
+          description: ''
+    put:
+      operationId: unidades_habitacionales_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this unidad habitacional.
+        required: true
+      tags:
+      - unidades-habitacionales
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UnidadHabitacionalRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UnidadHabitacionalRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UnidadHabitacionalRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnidadHabitacional'
+          description: ''
+    patch:
+      operationId: unidades_habitacionales_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this unidad habitacional.
+        required: true
+      tags:
+      - unidades-habitacionales
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUnidadHabitacionalRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUnidadHabitacionalRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUnidadHabitacionalRequest'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnidadHabitacional'
+          description: ''
+    delete:
+      operationId: unidades_habitacionales_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this unidad habitacional.
+        required: true
+      tags:
+      - unidades-habitacionales
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/users/:
+    get:
+      operationId: users_list
+      tags:
+      - users
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+          description: ''
+    post:
+      operationId: users_create
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/users/{id}/:
+    get:
+      operationId: users_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - users
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: users_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    patch:
+      operationId: users_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    delete:
+      operationId: users_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - users
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/vehiculos-autorizados/:
+    get:
+      operationId: vehiculos_autorizados_list
+      parameters:
+      - in: query
+        name: autorizado
+        schema:
+          type: boolean
+      - in: query
+        name: placa
+        schema:
+          type: string
+      - in: query
+        name: residente
+        schema:
+          type: integer
+      tags:
+      - vehiculos-autorizados
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VehiculoAutorizado'
+          description: ''
+    post:
+      operationId: vehiculos_autorizados_create
+      tags:
+      - vehiculos-autorizados
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VehiculoAutorizadoRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VehiculoAutorizadoRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VehiculoAutorizadoRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehiculoAutorizado'
+          description: ''
+  /api/vehiculos-autorizados/{id}/:
+    get:
+      operationId: vehiculos_autorizados_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this vehiculo autorizado.
+        required: true
+      tags:
+      - vehiculos-autorizados
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehiculoAutorizado'
+          description: ''
+    put:
+      operationId: vehiculos_autorizados_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this vehiculo autorizado.
+        required: true
+      tags:
+      - vehiculos-autorizados
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VehiculoAutorizadoRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VehiculoAutorizadoRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VehiculoAutorizadoRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehiculoAutorizado'
+          description: ''
+    patch:
+      operationId: vehiculos_autorizados_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this vehiculo autorizado.
+        required: true
+      tags:
+      - vehiculos-autorizados
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedVehiculoAutorizadoRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedVehiculoAutorizadoRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedVehiculoAutorizadoRequest'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehiculoAutorizado'
+          description: ''
+    delete:
+      operationId: vehiculos_autorizados_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this vehiculo autorizado.
+        required: true
+      tags:
+      - vehiculos-autorizados
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/visitas/:
+    get:
+      operationId: visitas_list
+      description: |-
+        Registro de visitantes y generación de QR.
+        Para crear una visita se debe enviar datos del visitante y residente.
+        El QR se genera automáticamente en el serializador/modelo.
+      parameters:
+      - in: query
+        name: fecha_visita
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: residente
+        schema:
+          type: integer
+      tags:
+      - visitas
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Visita'
+          description: ''
+    post:
+      operationId: visitas_create
+      description: |-
+        Registro de visitantes y generación de QR.
+        Para crear una visita se debe enviar datos del visitante y residente.
+        El QR se genera automáticamente en el serializador/modelo.
+      tags:
+      - visitas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VisitaRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VisitaRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VisitaRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Visita'
+          description: ''
+  /api/visitas/{id}/:
+    get:
+      operationId: visitas_retrieve
+      description: |-
+        Registro de visitantes y generación de QR.
+        Para crear una visita se debe enviar datos del visitante y residente.
+        El QR se genera automáticamente en el serializador/modelo.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this visita.
+        required: true
+      tags:
+      - visitas
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Visita'
+          description: ''
+    put:
+      operationId: visitas_update
+      description: |-
+        Registro de visitantes y generación de QR.
+        Para crear una visita se debe enviar datos del visitante y residente.
+        El QR se genera automáticamente en el serializador/modelo.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this visita.
+        required: true
+      tags:
+      - visitas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VisitaRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VisitaRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VisitaRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Visita'
+          description: ''
+    patch:
+      operationId: visitas_partial_update
+      description: |-
+        Registro de visitantes y generación de QR.
+        Para crear una visita se debe enviar datos del visitante y residente.
+        El QR se genera automáticamente en el serializador/modelo.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this visita.
+        required: true
+      tags:
+      - visitas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedVisitaRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedVisitaRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedVisitaRequest'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Visita'
+          description: ''
+    delete:
+      operationId: visitas_destroy
+      description: |-
+        Registro de visitantes y generación de QR.
+        Para crear una visita se debe enviar datos del visitante y residente.
+        El QR se genera automáticamente en el serializador/modelo.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this visita.
+        required: true
+      tags:
+      - visitas
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    Administrador:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        telefono:
+          type: string
+          nullable: true
+          maxLength: 20
+        fecha_contratacion:
+          type: string
+          format: date
+          readOnly: true
+      required:
+      - fecha_contratacion
+      - id
+      - user
+    AdministradorRequest:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          writeOnly: true
+        telefono:
+          type: string
+          nullable: true
+          maxLength: 20
+      required:
+      - user_id
+    AlertaSeguridad:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        residente_nombre:
+          type: string
+          readOnly: true
+          nullable: true
+        atendido_por_nombre:
+          type: string
+          readOnly: true
+          nullable: true
+        tipo_alerta:
+          $ref: '#/components/schemas/TipoAlertaEnum'
+        descripcion:
+          type: string
+        fecha_hora:
+          type: string
+          format: date-time
+          readOnly: true
+        url_evidencia:
+          type: string
+          format: uri
+          nullable: true
+          description: Link a la evidencia (S3/Cloudinary) generado por la IA externa
+          maxLength: 200
+        resuelto:
+          type: boolean
+        notas_resolucion:
+          type: string
+          nullable: true
+        residente_relacionado:
+          type: integer
+          nullable: true
+        atendido_por:
+          type: integer
+          nullable: true
+      required:
+      - atendido_por_nombre
+      - descripcion
+      - fecha_hora
+      - id
+      - residente_nombre
+      - tipo_alerta
+    AlertaSeguridadRequest:
+      type: object
+      properties:
+        tipo_alerta:
+          $ref: '#/components/schemas/TipoAlertaEnum'
+        descripcion:
+          type: string
+          minLength: 1
+        url_evidencia:
+          type: string
+          format: uri
+          nullable: true
+          description: Link a la evidencia (S3/Cloudinary) generado por la IA externa
+          maxLength: 200
+        resuelto:
+          type: boolean
+        notas_resolucion:
+          type: string
+          nullable: true
+        residente_relacionado:
+          type: integer
+          nullable: true
+        atendido_por:
+          type: integer
+          nullable: true
+      required:
+      - descripcion
+      - tipo_alerta
+    AreaComun:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        nombre:
+          type: string
+          maxLength: 100
+        descripcion:
+          type: string
+          nullable: true
+        capacidad_personas:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        costo_reserva:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        disponible:
+          type: boolean
+      required:
+      - id
+      - nombre
+    AreaComunRequest:
+      type: object
+      properties:
+        nombre:
+          type: string
+          minLength: 1
+          maxLength: 100
+        descripcion:
+          type: string
+          nullable: true
+        capacidad_personas:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        costo_reserva:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        disponible:
+          type: boolean
+      required:
+      - nombre
+    Cuota:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        residente_nombre:
+          type: string
+          readOnly: true
+        monto:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        mes:
+          type: string
+          description: 'Ej: Enero 2024'
+          maxLength: 20
+        fecha_vencimiento:
+          type: string
+          format: date
+        estado:
+          $ref: '#/components/schemas/CuotaEstadoEnum'
+        descripcion:
+          type: string
+          nullable: true
+        fecha_creacion:
+          type: string
+          format: date-time
+          readOnly: true
+        residente:
+          type: integer
+      required:
+      - fecha_creacion
+      - fecha_vencimiento
+      - id
+      - mes
+      - monto
+      - residente
+      - residente_nombre
+    CuotaEstadoEnum:
+      enum:
+      - pendiente
+      - pagada
+      - vencida
+      type: string
+      description: |-
+        * `pendiente` - Pendiente
+        * `pagada` - Pagada
+        * `vencida` - Vencida
+    CuotaRequest:
+      type: object
+      properties:
+        monto:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        mes:
+          type: string
+          minLength: 1
+          description: 'Ej: Enero 2024'
+          maxLength: 20
+        fecha_vencimiento:
+          type: string
+          format: date
+        estado:
+          $ref: '#/components/schemas/CuotaEstadoEnum'
+        descripcion:
+          type: string
+          nullable: true
+        residente:
+          type: integer
+      required:
+      - fecha_vencimiento
+      - mes
+      - monto
+      - residente
+    Pago:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        cuota_detalle:
+          allOf:
+          - $ref: '#/components/schemas/Cuota'
+          readOnly: true
+        monto_pagado:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        fecha_pago:
+          type: string
+          format: date-time
+          readOnly: true
+        metodo_pago:
+          type: string
+          nullable: true
+          maxLength: 50
+        referencia_comprobante:
+          type: string
+          nullable: true
+          maxLength: 100
+        notas:
+          type: string
+          nullable: true
+        cuota:
+          type: integer
+      required:
+      - cuota
+      - cuota_detalle
+      - fecha_pago
+      - id
+      - monto_pagado
+    PagoRequest:
+      type: object
+      properties:
+        cuota_id:
+          type: integer
+          writeOnly: true
+        monto_pagado:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        metodo_pago:
+          type: string
+          nullable: true
+          maxLength: 50
+        referencia_comprobante:
+          type: string
+          nullable: true
+          maxLength: 100
+        notas:
+          type: string
+          nullable: true
+        cuota:
+          type: integer
+      required:
+      - cuota
+      - cuota_id
+      - monto_pagado
+    PatchedAdministradorRequest:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          writeOnly: true
+        telefono:
+          type: string
+          nullable: true
+          maxLength: 20
+    PatchedAlertaSeguridadRequest:
+      type: object
+      properties:
+        tipo_alerta:
+          $ref: '#/components/schemas/TipoAlertaEnum'
+        descripcion:
+          type: string
+          minLength: 1
+        url_evidencia:
+          type: string
+          format: uri
+          nullable: true
+          description: Link a la evidencia (S3/Cloudinary) generado por la IA externa
+          maxLength: 200
+        resuelto:
+          type: boolean
+        notas_resolucion:
+          type: string
+          nullable: true
+        residente_relacionado:
+          type: integer
+          nullable: true
+        atendido_por:
+          type: integer
+          nullable: true
+    PatchedAreaComunRequest:
+      type: object
+      properties:
+        nombre:
+          type: string
+          minLength: 1
+          maxLength: 100
+        descripcion:
+          type: string
+          nullable: true
+        capacidad_personas:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        costo_reserva:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        disponible:
+          type: boolean
+    PatchedCuotaRequest:
+      type: object
+      properties:
+        monto:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        mes:
+          type: string
+          minLength: 1
+          description: 'Ej: Enero 2024'
+          maxLength: 20
+        fecha_vencimiento:
+          type: string
+          format: date
+        estado:
+          $ref: '#/components/schemas/CuotaEstadoEnum'
+        descripcion:
+          type: string
+          nullable: true
+        residente:
+          type: integer
+    PatchedPagoRequest:
+      type: object
+      properties:
+        cuota_id:
+          type: integer
+          writeOnly: true
+        monto_pagado:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        metodo_pago:
+          type: string
+          nullable: true
+          maxLength: 50
+        referencia_comprobante:
+          type: string
+          nullable: true
+          maxLength: 100
+        notas:
+          type: string
+          nullable: true
+        cuota:
+          type: integer
+    PatchedPersonalMantenimientoRequest:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          writeOnly: true
+        telefono:
+          type: string
+          nullable: true
+          maxLength: 20
+        especialidad:
+          type: string
+          nullable: true
+          description: 'Ej: Plomería, Electricidad'
+          maxLength: 100
+    PatchedReservaRequest:
+      type: object
+      properties:
+        area_comun_id:
+          type: integer
+          writeOnly: true
+        residente_id:
+          type: integer
+          writeOnly: true
+        fecha_reserva:
+          type: string
+          format: date
+        hora_inicio:
+          type: string
+          format: time
+        hora_fin:
+          type: string
+          format: time
+        estado:
+          $ref: '#/components/schemas/ReservaEstadoEnum'
+        cantidad_personas:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        notas:
+          type: string
+          nullable: true
+        area_comun:
+          type: integer
+        residente:
+          type: integer
+    PatchedResidenteRequest:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          writeOnly: true
+        unidad_habitacional_id:
+          type: integer
+          writeOnly: true
+        telefono:
+          type: string
+          nullable: true
+          maxLength: 20
+        es_propietario:
+          type: boolean
+        score_morosidad_ia:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          nullable: true
+          description: Puntaje (0-100) calculado por IA externa que indica probabilidad
+            de impago.
+        foto_perfil:
+          type: string
+          format: binary
+          nullable: true
+        unidad_habitacional:
+          type: integer
+    PatchedSeguridadRequest:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          writeOnly: true
+        telefono:
+          type: string
+          nullable: true
+          maxLength: 20
+        turno:
+          type: string
+          nullable: true
+          description: 'Ej: Mañana, Tarde, Noche'
+          maxLength: 50
+    PatchedTicketMantenimientoRequest:
+      type: object
+      properties:
+        titulo:
+          type: string
+          minLength: 1
+          maxLength: 200
+        descripcion:
+          type: string
+          minLength: 1
+        prioridad:
+          $ref: '#/components/schemas/PrioridadEnum'
+        estado:
+          $ref: '#/components/schemas/TicketMantenimientoEstadoEnum'
+        costo_estimado:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        costo_real:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        fecha_resolucion:
+          type: string
+          format: date-time
+          nullable: true
+        residente:
+          type: integer
+        asignado_a:
+          type: integer
+          nullable: true
+          description: Técnico encargado de la incidencia
+    PatchedUnidadHabitacionalRequest:
+      type: object
+      description: Gestión de unidades habitacionales (Deptos/Casas)
+      properties:
+        numero:
+          type: string
+          minLength: 1
+          description: 'Identificador único (ej: A-101)'
+          maxLength: 20
+        torre:
+          type: string
+          nullable: true
+          maxLength: 50
+        area_m2:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        activo:
+          type: boolean
+          description: Indica si la unidad está ocupable
+    PatchedUserRequest:
+      type: object
+      description: Serializer básico para User de Django con campos seguros
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+    PatchedVehiculoAutorizadoRequest:
+      type: object
+      properties:
+        placa:
+          type: string
+          minLength: 1
+          description: Placa sin guiones ni espacios para mejor validación
+          maxLength: 20
+        marca:
+          type: string
+          nullable: true
+          maxLength: 50
+        modelo:
+          type: string
+          nullable: true
+          maxLength: 50
+        color:
+          type: string
+          nullable: true
+          maxLength: 30
+        tipo_vehiculo:
+          type: string
+          nullable: true
+          maxLength: 50
+        autorizado:
+          type: boolean
+        residente:
+          type: integer
+    PatchedVisitaRequest:
+      type: object
+      properties:
+        nombre_visitante:
+          type: string
+          minLength: 1
+          maxLength: 200
+        documento_visitante:
+          type: string
+          nullable: true
+          maxLength: 50
+        fecha_visita:
+          type: string
+          format: date
+        hora_entrada_esperada:
+          type: string
+          format: time
+        hora_salida_esperada:
+          type: string
+          format: time
+          nullable: true
+        hora_entrada_real:
+          type: string
+          format: date-time
+          nullable: true
+        hora_salida_real:
+          type: string
+          format: date-time
+          nullable: true
+        notas:
+          type: string
+          nullable: true
+        residente:
+          type: integer
+        autorizado_por_seguridad:
+          type: integer
+          nullable: true
+    PersonalMantenimiento:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        telefono:
+          type: string
+          nullable: true
+          maxLength: 20
+        especialidad:
+          type: string
+          nullable: true
+          description: 'Ej: Plomería, Electricidad'
+          maxLength: 100
+        fecha_contratacion:
+          type: string
+          format: date
+          readOnly: true
+      required:
+      - fecha_contratacion
+      - id
+      - user
+    PersonalMantenimientoRequest:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          writeOnly: true
+        telefono:
+          type: string
+          nullable: true
+          maxLength: 20
+        especialidad:
+          type: string
+          nullable: true
+          description: 'Ej: Plomería, Electricidad'
+          maxLength: 100
+      required:
+      - user_id
+    PrioridadEnum:
+      enum:
+      - baja
+      - media
+      - alta
+      - urgente
+      type: string
+      description: |-
+        * `baja` - Baja
+        * `media` - Media
+        * `alta` - Alta
+        * `urgente` - Urgente
+    Reserva:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        area_comun_detalle:
+          allOf:
+          - $ref: '#/components/schemas/AreaComun'
+          readOnly: true
+        residente_nombre:
+          type: string
+          readOnly: true
+        fecha_reserva:
+          type: string
+          format: date
+        hora_inicio:
+          type: string
+          format: time
+        hora_fin:
+          type: string
+          format: time
+        estado:
+          $ref: '#/components/schemas/ReservaEstadoEnum'
+        cantidad_personas:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        notas:
+          type: string
+          nullable: true
+        fecha_creacion:
+          type: string
+          format: date-time
+          readOnly: true
+        area_comun:
+          type: integer
+        residente:
+          type: integer
+      required:
+      - area_comun
+      - area_comun_detalle
+      - fecha_creacion
+      - fecha_reserva
+      - hora_fin
+      - hora_inicio
+      - id
+      - residente
+      - residente_nombre
+    ReservaEstadoEnum:
+      enum:
+      - pendiente
+      - confirmada
+      - cancelada
+      - completada
+      type: string
+      description: |-
+        * `pendiente` - Pendiente
+        * `confirmada` - Confirmada
+        * `cancelada` - Cancelada
+        * `completada` - Completada
+    ReservaRequest:
+      type: object
+      properties:
+        area_comun_id:
+          type: integer
+          writeOnly: true
+        residente_id:
+          type: integer
+          writeOnly: true
+        fecha_reserva:
+          type: string
+          format: date
+        hora_inicio:
+          type: string
+          format: time
+        hora_fin:
+          type: string
+          format: time
+        estado:
+          $ref: '#/components/schemas/ReservaEstadoEnum'
+        cantidad_personas:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        notas:
+          type: string
+          nullable: true
+        area_comun:
+          type: integer
+        residente:
+          type: integer
+      required:
+      - area_comun
+      - area_comun_id
+      - fecha_reserva
+      - hora_fin
+      - hora_inicio
+      - residente
+      - residente_id
+    Residente:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        unidad_habitacional_detalle:
+          allOf:
+          - $ref: '#/components/schemas/UnidadHabitacional'
+          readOnly: true
+        telefono:
+          type: string
+          nullable: true
+          maxLength: 20
+        es_propietario:
+          type: boolean
+        score_morosidad_ia:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          nullable: true
+          description: Puntaje (0-100) calculado por IA externa que indica probabilidad
+            de impago.
+        foto_perfil:
+          type: string
+          format: uri
+          nullable: true
+        unidad_habitacional:
+          type: integer
+      required:
+      - id
+      - unidad_habitacional
+      - unidad_habitacional_detalle
+      - user
+    ResidenteRequest:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          writeOnly: true
+        unidad_habitacional_id:
+          type: integer
+          writeOnly: true
+        telefono:
+          type: string
+          nullable: true
+          maxLength: 20
+        es_propietario:
+          type: boolean
+        score_morosidad_ia:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          nullable: true
+          description: Puntaje (0-100) calculado por IA externa que indica probabilidad
+            de impago.
+        foto_perfil:
+          type: string
+          format: binary
+          nullable: true
+        unidad_habitacional:
+          type: integer
+      required:
+      - unidad_habitacional
+      - unidad_habitacional_id
+      - user_id
+    Seguridad:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        telefono:
+          type: string
+          nullable: true
+          maxLength: 20
+        turno:
+          type: string
+          nullable: true
+          description: 'Ej: Mañana, Tarde, Noche'
+          maxLength: 50
+        fecha_contratacion:
+          type: string
+          format: date
+          readOnly: true
+      required:
+      - fecha_contratacion
+      - id
+      - user
+    SeguridadRequest:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          writeOnly: true
+        telefono:
+          type: string
+          nullable: true
+          maxLength: 20
+        turno:
+          type: string
+          nullable: true
+          description: 'Ej: Mañana, Tarde, Noche'
+          maxLength: 50
+      required:
+      - user_id
+    TicketMantenimiento:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        residente_nombre:
+          type: string
+          readOnly: true
+        asignado_a_nombre:
+          type: string
+          readOnly: true
+          nullable: true
+        titulo:
+          type: string
+          maxLength: 200
+        descripcion:
+          type: string
+        prioridad:
+          $ref: '#/components/schemas/PrioridadEnum'
+        estado:
+          $ref: '#/components/schemas/TicketMantenimientoEstadoEnum'
+        costo_estimado:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        costo_real:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        fecha_creacion:
+          type: string
+          format: date-time
+          readOnly: true
+        fecha_resolucion:
+          type: string
+          format: date-time
+          nullable: true
+        residente:
+          type: integer
+        asignado_a:
+          type: integer
+          nullable: true
+          description: Técnico encargado de la incidencia
+      required:
+      - asignado_a_nombre
+      - descripcion
+      - fecha_creacion
+      - id
+      - residente
+      - residente_nombre
+      - titulo
+    TicketMantenimientoEstadoEnum:
+      enum:
+      - abierto
+      - en_proceso
+      - resuelto
+      - cerrado
+      type: string
+      description: |-
+        * `abierto` - Abierto
+        * `en_proceso` - En Proceso
+        * `resuelto` - Resuelto
+        * `cerrado` - Cerrado
+    TicketMantenimientoRequest:
+      type: object
+      properties:
+        titulo:
+          type: string
+          minLength: 1
+          maxLength: 200
+        descripcion:
+          type: string
+          minLength: 1
+        prioridad:
+          $ref: '#/components/schemas/PrioridadEnum'
+        estado:
+          $ref: '#/components/schemas/TicketMantenimientoEstadoEnum'
+        costo_estimado:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        costo_real:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        fecha_resolucion:
+          type: string
+          format: date-time
+          nullable: true
+        residente:
+          type: integer
+        asignado_a:
+          type: integer
+          nullable: true
+          description: Técnico encargado de la incidencia
+      required:
+      - descripcion
+      - residente
+      - titulo
+    TipoAlertaEnum:
+      enum:
+      - intruso
+      - perro_suelto
+      - vehiculo_sospechoso
+      - actividad_inusual
+      - otro
+      type: string
+      description: |-
+        * `intruso` - Intruso Detectado
+        * `perro_suelto` - Perro Suelto
+        * `vehiculo_sospechoso` - Vehículo Sospechoso
+        * `actividad_inusual` - Actividad Inusual
+        * `otro` - Otro
+    UnidadHabitacional:
+      type: object
+      description: Gestión de unidades habitacionales (Deptos/Casas)
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        numero:
+          type: string
+          description: 'Identificador único (ej: A-101)'
+          maxLength: 20
+        torre:
+          type: string
+          nullable: true
+          maxLength: 50
+        area_m2:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        activo:
+          type: boolean
+          description: Indica si la unidad está ocupable
+      required:
+      - id
+      - numero
+    UnidadHabitacionalRequest:
+      type: object
+      description: Gestión de unidades habitacionales (Deptos/Casas)
+      properties:
+        numero:
+          type: string
+          minLength: 1
+          description: 'Identificador único (ej: A-101)'
+          maxLength: 20
+        torre:
+          type: string
+          nullable: true
+          maxLength: 50
+        area_m2:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        activo:
+          type: boolean
+          description: Indica si la unidad está ocupable
+      required:
+      - numero
+    User:
+      type: object
+      description: Serializer básico para User de Django con campos seguros
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+      required:
+      - id
+      - username
+    UserRequest:
+      type: object
+      description: Serializer básico para User de Django con campos seguros
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - password
+      - username
+    VehiculoAutorizado:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        residente_nombre:
+          type: string
+          readOnly: true
+        placa:
+          type: string
+          description: Placa sin guiones ni espacios para mejor validación
+          maxLength: 20
+        marca:
+          type: string
+          nullable: true
+          maxLength: 50
+        modelo:
+          type: string
+          nullable: true
+          maxLength: 50
+        color:
+          type: string
+          nullable: true
+          maxLength: 30
+        tipo_vehiculo:
+          type: string
+          nullable: true
+          maxLength: 50
+        autorizado:
+          type: boolean
+        fecha_registro:
+          type: string
+          format: date-time
+          readOnly: true
+        residente:
+          type: integer
+      required:
+      - fecha_registro
+      - id
+      - placa
+      - residente
+      - residente_nombre
+    VehiculoAutorizadoRequest:
+      type: object
+      properties:
+        placa:
+          type: string
+          minLength: 1
+          description: Placa sin guiones ni espacios para mejor validación
+          maxLength: 20
+        marca:
+          type: string
+          nullable: true
+          maxLength: 50
+        modelo:
+          type: string
+          nullable: true
+          maxLength: 50
+        color:
+          type: string
+          nullable: true
+          maxLength: 30
+        tipo_vehiculo:
+          type: string
+          nullable: true
+          maxLength: 50
+        autorizado:
+          type: boolean
+        residente:
+          type: integer
+      required:
+      - placa
+      - residente
+    Visita:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        residente_nombre:
+          type: string
+          readOnly: true
+        nombre_visitante:
+          type: string
+          maxLength: 200
+        documento_visitante:
+          type: string
+          nullable: true
+          maxLength: 50
+        fecha_visita:
+          type: string
+          format: date
+        hora_entrada_esperada:
+          type: string
+          format: time
+        hora_salida_esperada:
+          type: string
+          format: time
+          nullable: true
+        codigo_qr_acceso:
+          type: string
+          readOnly: true
+          nullable: true
+        hora_entrada_real:
+          type: string
+          format: date-time
+          nullable: true
+        hora_salida_real:
+          type: string
+          format: date-time
+          nullable: true
+        notas:
+          type: string
+          nullable: true
+        fecha_creacion:
+          type: string
+          format: date-time
+          readOnly: true
+        residente:
+          type: integer
+        autorizado_por_seguridad:
+          type: integer
+          nullable: true
+      required:
+      - codigo_qr_acceso
+      - fecha_creacion
+      - fecha_visita
+      - hora_entrada_esperada
+      - id
+      - nombre_visitante
+      - residente
+      - residente_nombre
+    VisitaRequest:
+      type: object
+      properties:
+        nombre_visitante:
+          type: string
+          minLength: 1
+          maxLength: 200
+        documento_visitante:
+          type: string
+          nullable: true
+          maxLength: 50
+        fecha_visita:
+          type: string
+          format: date
+        hora_entrada_esperada:
+          type: string
+          format: time
+        hora_salida_esperada:
+          type: string
+          format: time
+          nullable: true
+        hora_entrada_real:
+          type: string
+          format: date-time
+          nullable: true
+        hora_salida_real:
+          type: string
+          format: date-time
+          nullable: true
+        notas:
+          type: string
+          nullable: true
+        residente:
+          type: integer
+        autorizado_por_seguridad:
+          type: integer
+          nullable: true
+      required:
+      - fecha_visita
+      - hora_entrada_esperada
+      - nombre_visitante
+      - residente
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
