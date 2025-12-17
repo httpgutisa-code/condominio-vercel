@@ -1,6 +1,5 @@
-```javascript
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthProvider';
+import { AuthProvider } from './context/AuthContext';
 import Login from './components/auth/Login';
 import Dashboard from './components/dashboard/Dashboard';
 import ResidentesTable from './components/residentes/ResidentesTable';
@@ -35,4 +34,3 @@ function App() {
 }
 
 export default App;
-```
