@@ -61,16 +61,16 @@ const FinanceChart = ({ data }) => {
                 </h3>
             </div>
 
-            <div className="flex-1 flex flex-col items-center justify-center relative p-4">
-                <div className="w-full h-[280px]">
-                    <ResponsiveContainer width="100%" height="100%">
+            <div className="flex-1 flex flex-col items-center justify-center relative p-4 min-h-[300px]">
+                <div className="w-full h-full">
+                    <ResponsiveContainer width="100%" height="100%" minWidth={200} minHeight={200}>
                         <PieChart>
                             <Pie
                                 data={chartData}
                                 cx="50%"
                                 cy="50%"
-                                innerRadius={80}
-                                outerRadius={100}
+                                innerRadius={70}
+                                outerRadius={90}
                                 paddingAngle={4}
                                 dataKey="value"
                                 stroke="none"
@@ -86,10 +86,10 @@ const FinanceChart = ({ data }) => {
                     </ResponsiveContainer>
                 </div>
 
-                {/* Center Text for Donut */}
-                <div className="absolute top-[40%] left-1/2 transform -translate-x-1/2 -translate-y-[60%] text-center pointer-events-none">
-                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1">Total Mes</p>
-                    <p className="text-2xl font-bold text-gray-900 tracking-tight font-mono">
+                {/* Center Text for Donut - Scaled down */}
+                <div className="absolute top-[42%] left-1/2 transform -translate-x-1/2 -translate-y-[60%] text-center pointer-events-none">
+                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-0.5">Total Mes</p>
+                    <p className="text-xl font-bold text-gray-900 tracking-tight font-mono">
                         {formatCurrency(total)}
                     </p>
                 </div>

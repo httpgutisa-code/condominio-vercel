@@ -84,8 +84,8 @@ const BitacoraVisitas = () => {
     };
 
     const filteredVisitas = visitaList.filter(v => 
-        v.visitante_nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        v.visitante_documento.includes(searchTerm)
+        (v.visitante_nombre || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (v.visitante_documento || '').includes(searchTerm)
     );
 
     if (loading) return <div className="p-8 text-center">Cargando bitácora...</div>;
