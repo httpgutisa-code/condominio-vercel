@@ -1,6 +1,12 @@
 import axios from 'axios';
 
-const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:8000').replace(/\/$/, '') + '/api/';
+let API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:8000').replace(/\/$/, '') + '/api/';
+
+// Fix Mixed Content: If we are on HTTPS but API is HTTP, force proxy usage
+if (typeof window !== 'undefined' && window.location.protocol === 'https:' && API_BASE_URL.startsWith('http:')) {
+    console.warn('Protocol mismatch detected. Switching to relative API path for Vercel proxy.');
+    API_BASE_URL = '/api/';
+}
 
 const api = axios.create({
     baseURL: API_BASE_URL,
